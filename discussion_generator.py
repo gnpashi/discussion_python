@@ -1,8 +1,6 @@
-#!/usr/bin/env python
 import requests
 import json 
 from gtts import gTTS
-import os
 from pygame import mixer
 import time
 from pynput.keyboard import Key, Listener
