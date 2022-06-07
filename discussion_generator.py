@@ -1,6 +1,7 @@
 import requests
 import json 
 from gtts import gTTS
+from io import BytesIO
 from pygame import mixer
 import time
 from pynput.keyboard import Key, Listener
@@ -8,9 +9,11 @@ from pynput.keyboard import Key, Listener
 print("press 'o' key to generate a new discussion")
 print("press 'p' to stop")
 
+mixer.init()
+
 def article():
     url = 'https://en.wikipedia.org/api/rest_v1/page/random/summary'
-    headers = {'user-agent': 'my-app/0.0.1'}
+    headers = {'user-agent': 'random-discussions/0.0.1'}
     response = requests.get(url, headers=headers)
     json_response = json.loads(response.text)
 
@@ -20,12 +23,12 @@ def article():
     print("\n")
     language = 'en'
 
-    myobj = gTTS(text=mytext, lang=language, slow=False)
+    mp3_fp = BytesIO()
+    tts_result = gTTS(text=mytext, lang=language, slow=False)
 
-    myobj.save("discussion.mp3")
+    tts_result.write_to_fp(mp3_fp)
 
-    mixer.init()
-    mixer.music.load('discussion.mp3')
+    mixer.music.load(mp3_fp, "discussion.mp3")
     mixer.music.play()
 def on_press(key):
     if hasattr(key, 'char'):
